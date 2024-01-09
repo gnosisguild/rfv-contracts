@@ -19,6 +19,17 @@ if (!infuraApiKey) {
   throw new Error("Please set your INFURA_API_KEY in a .env file");
 }
 
+const { PK } = process.env;
+
+const sharedNetworkConfig: HttpNetworkUserConfig = {};
+if (PK) {
+  sharedNetworkConfig.accounts = [PK];
+} else {
+  sharedNetworkConfig.accounts = {
+    mnemonic: MNEMONIC || DEFAULT_MNEMONIC,
+  };
+}
+
 const chainIds = {
   "arbitrum-mainnet": 42161,
   avalanche: 43114,
@@ -57,7 +68,7 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
 }
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat",
+  defaultNetwork: "goerli",
   namedAccounts: {
     deployer: 0,
   },
@@ -71,6 +82,7 @@ const config: HardhatUserConfig = {
       polygon: process.env.POLYGONSCAN_API_KEY || "",
       polygonMumbai: process.env.POLYGONSCAN_API_KEY || "",
       sepolia: process.env.ETHERSCAN_API_KEY || "",
+      goerli: process.env.ETHERSCAN_API_KEY || "",
     },
   },
   gasReporter: {
@@ -101,6 +113,11 @@ const config: HardhatUserConfig = {
     "polygon-mainnet": getChainConfig("polygon-mainnet"),
     "polygon-mumbai": getChainConfig("polygon-mumbai"),
     sepolia: getChainConfig("sepolia"),
+    //goerli: getChainConfig("goerli"),
+    goerli: {
+      ...sharedNetworkConfig,
+      url: `https://goerli.infura.io/v3/${infuraApiKey}`,
+    },
   },
   paths: {
     artifacts: "./artifacts",
