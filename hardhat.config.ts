@@ -68,7 +68,7 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
 }
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "goerli",
+  defaultNetwork: "hardhat",
   namedAccounts: {
     deployer: 0,
   },
